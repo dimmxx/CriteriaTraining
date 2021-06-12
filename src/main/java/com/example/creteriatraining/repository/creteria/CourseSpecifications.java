@@ -1,6 +1,7 @@
 package com.example.creteriatraining.repository.creteria;
 
 import com.example.creteriatraining.domain.Course;
+import com.example.creteriatraining.domain.Course_;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.lang.NonNull;
 
@@ -18,8 +19,8 @@ public class CourseSpecifications {
             public Predicate toPredicate(@NonNull Root<Course> root,
                                          @NonNull CriteriaQuery<?> query,
                                          @NonNull CriteriaBuilder criteriaBuilder) {
-                root.fetch("students", JoinType.LEFT);
-                Predicate predicate = criteriaBuilder.like(root.get("title"), "%"+name+"%");
+                root.fetch(Course_.students, JoinType.LEFT);
+                Predicate predicate = criteriaBuilder.like(root.get(Course_.title), "%"+name+"%");
                 return predicate;
             }
         };
@@ -31,7 +32,7 @@ public class CourseSpecifications {
             public Predicate toPredicate(@NonNull Root<Course> root,
                                          @NonNull CriteriaQuery<?> query,
                                          @NonNull CriteriaBuilder criteriaBuilder) {
-                root.fetch("students", JoinType.LEFT);
+                root.fetch(Course_.students, JoinType.LEFT);
                 return criteriaBuilder.isTrue(criteriaBuilder.literal(true));
             }
         };
