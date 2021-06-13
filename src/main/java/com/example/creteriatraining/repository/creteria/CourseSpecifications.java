@@ -20,8 +20,7 @@ public class CourseSpecifications {
                                          @NonNull CriteriaQuery<?> query,
                                          @NonNull CriteriaBuilder criteriaBuilder) {
                 root.fetch(Course_.students, JoinType.LEFT);
-                Predicate predicate = criteriaBuilder.like(root.get(Course_.title), "%"+name+"%");
-                return predicate;
+                return criteriaBuilder.like(root.get(Course_.title), "%"+name+"%");
             }
         };
     }
@@ -33,11 +32,24 @@ public class CourseSpecifications {
                                          @NonNull CriteriaQuery<?> query,
                                          @NonNull CriteriaBuilder criteriaBuilder) {
                 root.fetch(Course_.students, JoinType.LEFT);
+                query.distinct(true);
                 return criteriaBuilder.isTrue(criteriaBuilder.literal(true));
             }
         };
     }
 
+    public static Specification<Course> fetchReviews(){
+        return new Specification<Course>() {
+            @Override
+            public Predicate toPredicate(@NonNull Root<Course> root,
+                                         @NonNull CriteriaQuery<?> query,
+                                         @NonNull CriteriaBuilder criteriaBuilder) {
+                root.fetch(Course_.reviews, JoinType.LEFT);
+                query.distinct(true);
+                return criteriaBuilder.isTrue(criteriaBuilder.literal(true));
+            }
+        };
+    }
 
 
 

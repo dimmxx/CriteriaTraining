@@ -5,11 +5,10 @@ import com.example.creteriatraining.domain.Passport;
 import com.example.creteriatraining.domain.Review;
 import com.example.creteriatraining.domain.Student;
 import com.example.creteriatraining.repository.CourseRepository;
+import com.example.creteriatraining.repository.PassportRepository;
+import com.example.creteriatraining.repository.ReviewRepository;
 import com.example.creteriatraining.repository.StudentRepository;
-import com.example.creteriatraining.repository.creteria.CourseSpecifications;
 import com.example.creteriatraining.service.util.LibraryReader;
-import org.springframework.boot.context.event.ApplicationReadyEvent;
-import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Service;
 
 import java.nio.charset.Charset;
@@ -24,6 +23,8 @@ public class DataInjector {
 
     private final StudentRepository studentRepository;
     private final CourseRepository courseRepository;
+    private final PassportRepository passportRepository;
+    private final ReviewRepository reviewRepository;
 
     private final List<String> courseNames = List.of("Algebra", "Chemistry", "Biology", "Philosophy", "Physics", "Literature", "History");
     private final List<String> reviews = LibraryReader.readFile("src/main/resources/library.md", Charset.defaultCharset());
@@ -33,9 +34,14 @@ public class DataInjector {
 
     private final String[] alphabet = "a b c d e f g h i j k l m n o p q r s t u v w x y z".toUpperCase(Locale.ROOT).split(" ", -1);
 
-    public DataInjector(StudentRepository studentRepository, CourseRepository courseRepository) {
+    public DataInjector(StudentRepository studentRepository,
+                        CourseRepository courseRepository,
+                        PassportRepository passportRepository,
+                        ReviewRepository reviewRepository) {
         this.studentRepository = studentRepository;
         this.courseRepository = courseRepository;
+        this.passportRepository = passportRepository;
+        this.reviewRepository = reviewRepository;
     }
 
     public String generateRandomFirstName() {
@@ -43,18 +49,16 @@ public class DataInjector {
     }
 
     public String generateRandomLastName() {
-        return lastNames.get(randomGen(0, lastNames.size() -1));
+        return lastNames.get(randomGen(0, lastNames.size() - 1));
     }
 
     public String generateRandomThirdName() {
         return thirdNames.get(randomGen(0, thirdNames.size() - 1));
     }
 
-    @EventListener(ApplicationReadyEvent.class)
     public void injectData() {
-
+        truncateDataBase();
         List<Course> courses = courseNames.stream().map(Course::new).collect(Collectors.toList());
-
         for (Course course : courses) {
             for (int i = 0; i < randomGen(10, 40); i++) {
                 Student student = new Student();
@@ -67,11 +71,13 @@ public class DataInjector {
             }
             fetchReviews(course);
         }
-        List<Course> courses1 = courseRepository.findAll(CourseSpecifications.nameLike("ge"));
     }
 
-    public void truncateDataBase(){
+    public void truncateDataBase() {
         courseRepository.deleteAll();
+        studentRepository.deleteAll();
+        passportRepository.deleteAll();
+        reviewRepository.deleteAll();
     }
 
     private void fetchPassport(Student student) {
