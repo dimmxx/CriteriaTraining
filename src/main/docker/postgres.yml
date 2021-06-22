@@ -1,12 +1,12 @@
 version: '3.8'
 services:
-  creteria-postgresql:
+  criteria-postgresql:
     image: postgres:latest
     # volumes:
     #     - ~/volumes/jhipster/schoolservice/postgresql/:/var/lib/postgresql/data/
     environment:
-      - POSTGRES_DB=creteria
-      - POSTGRES_USER=creteria
-      - POSTGRES_PASSWORD=creteria
+      - POSTGRES_DB=criteria
+      - POSTGRES_USER=criteria
+      - POSTGRES_PASSWORD=criteria
     ports:
       - 5455:5432

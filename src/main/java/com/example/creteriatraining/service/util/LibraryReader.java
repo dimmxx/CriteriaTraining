@@ -1,6 +1,7 @@
 package com.example.creteriatraining.service.util;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -27,4 +28,22 @@ public class LibraryReader {
         }
         return new ArrayList<>();
     }
+
+    public static List<String> readFileInputStream(InputStream inputStream, Charset encoding){
+        try{
+            byte[] encoded = inputStream.readAllBytes();
+            String str = new String(encoded, encoding);
+            String[] output = str.split("\n", -1);
+            return Arrays.stream(output)
+                    .filter(s -> !Objects.equals(s, ""))
+                    .distinct()
+                    .collect(Collectors.toList());
+        }catch (IOException e){
+            e.printStackTrace();
+        }
+        return new ArrayList<>();
+    }
+
+
+
 }
